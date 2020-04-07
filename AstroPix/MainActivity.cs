@@ -3,9 +3,11 @@ using Android.OS;
 using Android.Runtime;
 using Android.Support.Design.Widget;
 using Android.Support.V7.App;
+using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
 using AstroPix.Shared;
+using AstroPix.Shared.Models;
 using AstroPix.Shared.ViewModels;
 
 namespace AstroPix
@@ -14,17 +16,32 @@ namespace AstroPix
     public class MainActivity : AppCompatActivity, BottomNavigationView.IOnNavigationItemSelectedListener
     {
         TextView textMessage;
+        ImageResultsAdapter _adapter;
+        RecyclerView _recyclerView;
+        RecyclerView.LayoutManager _layoutManager;
+        ImageResults images;
 
         protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            SetContentView(Resource.Layout.activity_main);
+            SetContentView(Resource.Layout.Main);
 
 
             var viewModel = new ImagesViewModel(new AstrobinService());
 
-            var test = await viewModel.GetTasksAsync();
+            images = await viewModel.GetTasksAsync();
+
+            _adapter = new ImageResultsAdapter(this, images);
+            SetContentView(Resource.Layout.Main);
+
+            _recyclerView = FindViewById<RecyclerView>(Resource.Id.imageOfTheDayRecycler);
+
+            _recyclerView.SetAdapter(_adapter);
+
+            _layoutManager = new LinearLayoutManager(this);
+            _recyclerView.SetLayoutManager(_layoutManager);
+
 
             textMessage = FindViewById<TextView>(Resource.Id.message);
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
@@ -41,13 +58,10 @@ namespace AstroPix
             switch (item.ItemId)
             {
                 case Resource.Id.navigation_home:
-                    textMessage.SetText(Resource.String.title_home);
                     return true;
                 case Resource.Id.navigation_dashboard:
-                    textMessage.SetText(Resource.String.title_dashboard);
                     return true;
                 case Resource.Id.navigation_notifications:
-                    textMessage.SetText(Resource.String.title_notifications);
                     return true;
             }
             return false;
