@@ -3,3 +3,5 @@ bin/
 .*
 !.gitignore
 *.log
+AstroPix.Shared/obj/
+AstroPix/obj/
