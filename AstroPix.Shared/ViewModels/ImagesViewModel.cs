@@ -20,5 +20,21 @@ namespace AstroPix.Shared.ViewModels
         {
             return astrobinService.RefreshDataAsync();
         }
+
+        public List<string> GetImageIds(ImageResults items)
+        {
+            var list = new List<string>();
+            foreach (var item in items.objects)
+            {
+                string input = item.image;
+                int index = input.LastIndexOf("/") + 1;
+                if (index > 0)
+                {
+                    input = input.Substring(index, input.Length - index);
+                    list.Add(input);
+                }
+            }
+            return list;
+        }
     }
 }

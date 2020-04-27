@@ -11,6 +11,7 @@ using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
 using AstroPix.Shared.Models;
+using FFImageLoading;
 
 namespace AstroPix
 {
@@ -19,16 +20,18 @@ namespace AstroPix
 
         Context context;
         public ImageResults _images;
+        public List<string> _imageUrls;
 
         public override int ItemCount
         {
             get { return _images.objects.Count(); }
         }
 
-        public ImageResultsAdapter(Context context, ImageResults images)
+        public ImageResultsAdapter(Context context, ImageResults images, List<string> imageUrls)
         {
             this.context = context;
-            _images = images; 
+            _images = images;
+            _imageUrls = imageUrls;
         }
 
 
@@ -43,6 +46,10 @@ namespace AstroPix
         {
             ImageResultsViewHolder vh = holder as ImageResultsViewHolder;
             vh.DateText.Text = _images.objects[position].date;
+
+            var url = $"https://www.astrobin.com/{_imageUrls[position]}/0/rawthumb/regular/";
+
+            ImageService.Instance.LoadUrl(url).Retry(3, 200).LoadingPlaceholder("placeholder.png", FFImageLoading.Work.ImageSource.CompiledResource).Into(vh.Image);
 
             return;
         }

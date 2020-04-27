@@ -9,17 +9,19 @@ using Android.Widget;
 using AstroPix.Shared;
 using AstroPix.Shared.Models;
 using AstroPix.Shared.ViewModels;
+using System.Collections.Generic;
 
 namespace AstroPix
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity, BottomNavigationView.IOnNavigationItemSelectedListener
     {
-        TextView textMessage;
-        ImageResultsAdapter _adapter;
-        RecyclerView _recyclerView;
-        RecyclerView.LayoutManager _layoutManager;
-        ImageResults images;
+        TextView textMessage { get; set; }
+        ImageResultsAdapter _adapter { get; set; }
+        RecyclerView _recyclerView { get; set; }
+        RecyclerView.LayoutManager _layoutManager { get; set; }
+        ImageResults images { get; set; }
+        List<string> imageUrls { get; set; }
 
         protected async override void OnCreate(Bundle savedInstanceState)
         {
@@ -32,7 +34,9 @@ namespace AstroPix
 
             images = await viewModel.GetTasksAsync();
 
-            _adapter = new ImageResultsAdapter(this, images);
+            imageUrls = viewModel.GetImageIds(images);
+
+            _adapter = new ImageResultsAdapter(this, images, imageUrls);
             SetContentView(Resource.Layout.Main);
 
             _recyclerView = FindViewById<RecyclerView>(Resource.Id.imageOfTheDayRecycler);

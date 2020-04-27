@@ -16,10 +16,12 @@ namespace AstroPix
     public class ImageResultsViewHolder : RecyclerView.ViewHolder
     {
         public TextView DateText { get; private set; }
+        public ImageView Image { get; private set; }
 
         public ImageResultsViewHolder(View itemView) : base(itemView)
         {
             DateText = itemView.FindViewById<TextView>(Resource.Id.textView);
+            Image = itemView.FindViewById<ImageView>(Resource.Id.imageView);
         }
     }
 }
